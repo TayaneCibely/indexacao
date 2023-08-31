@@ -13,12 +13,15 @@ typedef struct indice {
   int indice;
 } tipo_dado;
 
-typedef struct no_bst{
+typedef struct no_avl{
   tipo_dado *dado;
-  struct no_bst *esq, *dir;
-} no_bst;
+  struct no_avl *esq, *dir;
+  int altura;
+} no_avl;
 
-typedef no_bst * arvore;
+typedef no_avl * arvore;
+
+arvore adicionar(tipo_dado *valor, arvore raiz);
 
 typedef struct tabela{
   FILE *arquivo_dados;

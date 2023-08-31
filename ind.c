@@ -28,7 +28,7 @@ void adicionarLivro(tabela *tab, dado *livro){
 
 	novo->chave = livro->codigo;
 
-	fseek(tab->arquivo, 0L, tab->arquivo_dados);
+	fseek(tab->arquivo_dados, 0L, tab->arquivo_dados);
 	novo->indice = ftell(tab->arquivo_dados);
 
 	fwrite(livro, sizeof(dado), 1, tab->arquivo_dados);
@@ -36,21 +36,21 @@ void adicionarLivro(tabela *tab, dado *livro){
     }
 }
 
-void adicionar(tipo_dado *valor, arvore raiz){
-   if(raiz == NULL){
-	arvore novo = (arvore) malloc(sizeof(struct no_bst));
-	novo->dado = valor;
-	novo->esq = NULL;
-	novo->dir = NULL;
-	return novo;
-   }
-   
-   if(valor->chave > raiz->dado->chave){
-	raiz->dir = adicionar(valor, raiz->dir);
-   }else{
-	raiz->esq = adicionar(valor, raiz->esq);
-   }
-   return raiz;
+arvore adicionar(tipo_dado *valor, arvore raiz){
+    if(raiz == NULL){
+        arvore novo = (arvore) malloc(sizeof(struct no_bst));
+        novo->dado = valor;
+        novo->esq = NULL;
+        novo->dir = NULL;
+        return novo; // Adicione esta linha para retornar o novo nó criado
+    }
+
+    if(valor->chave > raiz->dado->chave){
+        raiz->dir = adicionar(valor, raiz->dir);
+    }else{
+        raiz->esq = adicionar(valor, raiz->esq);
+    }
+    return raiz;
 }
 
 int altura(arvore raiz){
@@ -76,45 +76,69 @@ void pre_order(arvore raiz, tabela*tab){
   }
 }
 
-void pos_order(arvore raiz, tabela *tab){
-  if(raiz != NULL){
-    pos_order(raiz->esq, tab);
-    pos_order(raiz->dir, tab);
-    imprimir_elemento(raiz, tab);
-  }
-}
-
-void in_order(arvore raiz, tabela *tab){
-  if(raiz != NULL{
-    in_order(raiz->esq, tab);
-    imprimir_elemento(raiz, tab);
-    in_order(raiz->dir, tab);
+void pos_order(arvore raiz, tabela *tab) {
+    if (raiz != NULL) {
+        pos_order(raiz->esq, tab);
+        pos_order(raiz->dir, tab);
+        imprimir_elemento(raiz, tab);
     }
 }
 
-void imprimir_elemento(arvore raiz, tabela *tab){
-  dado * temp = (dado *)malloc(sizeof(dado));
-  temp->codigo = 1000;
-  printf("Indice: %d\n", raiz->dado->indice);
-
-  fseek(tav, long off, int whence)
+void in_order(arvore raiz, tabela *tab) {
+    if (raiz != NULL) {
+        in_order(raiz->esq, tab);
+        imprimir_elemento(raiz, tab);
+        in_order(raiz->dir, tab);
+    }
 }
 
-dado * ler_dados(){
-  dado *novo = (dado *) malloc(sizeof(dado));
-  //fpurge(stdin);
-  getchar();
-  printf("Titulo: ");
-  fgetc(novo->titulo, 80, stdin);
-  tirar_enter(novo->titulo);
-  printf("Autor: ");
-  fgets(novo->autor, 50, stdin);
-  tirar_enter("Isbn: ");
-  fgets(novo->isbn, 20, stdin);
-  tirar_enter(novo->isbn);
-  printf("Codigo: ");
-  scanf("%d", &novo->codigo);
-  return novo;
+
+void imprimir_elemento(arvore raiz, tabela *tab) {
+    dado *temp = (dado *)malloc(sizeof(dado));
+    temp->codigo = 1000;
+    printf("Indice: %d\n", raiz->dado->indice);
+
+    fseek(tab->arquivo_dados, raiz->dado->indice, SEEK_SET);
+
+    // Ler o registro do arquivo
+    fread(temp, sizeof(dado), 1, tab->arquivo_dados);
+
+    // Agora você pode imprimir os campos do registro ou fazer o que for necessário
+    printf("Titulo: %s\n", temp->titulo);
+    printf("Autor: %s\n", temp->autor);
+    printf("ISBN: %s\n", temp->isbn);
+    printf("Código: %d\n", temp->codigo);
+
+    free(temp); // Não se esqueça de liberar a memória alocada
+}
+
+dado *ler_dados() {
+    dado *novo = (dado *)malloc(sizeof(dado));
+
+    getchar(); // Consumir o caractere de nova linha pendente
+
+    printf("Titulo: ");
+    fgets(novo->titulo, sizeof(novo->titulo), stdin);
+    tirar_enter(novo->titulo);
+
+    getchar(); // Pausa para permitir a visualização
+
+    printf("Autor: ");
+    fgets(novo->autor, sizeof(novo->autor), stdin);
+    tirar_enter(novo->autor);
+
+    getchar(); // Pausa para permitir a visualização
+
+    printf("Isbn: ");
+    fgets(novo->isbn, sizeof(novo->isbn), stdin);
+    tirar_enter(novo->isbn);
+
+    getchar(); // Pausa para permitir a visualização
+
+    printf("Codigo: ");
+    scanf("%d", &novo->codigo);
+
+    return novo;
 }
 
 void tirar_enter(char *string){
@@ -147,7 +171,7 @@ arvore carregar_arquivo(char *nome, arvore a){
     while(fread(temp, sizeof(tipo_dado), 1, arq)){
       a = adicionar(temp, a);
       temp = (tipo_dado *) malloc(sizeof(tipo_dado));
-      
+
     }
     fclose(arq);
   }
