@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdio_ext.h>
 #include <stdlib.h>
+#include "ind.h"
 
 void inicializar(arvore *raiz){
     *raiz = NULL;
@@ -28,7 +30,7 @@ void adicionarLivro(tabela *tab, dado *livro){
 
 	novo->chave = livro->codigo;
 
-	fseek(tab->arquivo_dados, 0L, tab->arquivo_dados);
+	fseek(tab->arquivo_dados, 0L, SEEK_SET);
 	novo->indice = ftell(tab->arquivo_dados);
 
 	fwrite(livro, sizeof(dado), 1, tab->arquivo_dados);
@@ -67,14 +69,14 @@ int maior(int a, int b){
   }
 }
 
-void pre_order(arvore raiz, tabela*tab){
-  if(raiz != NULL){
-    imprimir_elemento(raiz, tab){
-      pre_order(raiz->esq, tab);
-      pre_order(raiz->dir, tab);
+void pre_order(arvore raiz, tabela* tab) {
+    if (raiz != NULL) {
+        imprimir_elemento(raiz, tab);
+        pre_order(raiz->esq, tab);
+        pre_order(raiz->dir, tab);
     }
-  }
 }
+
 
 void pos_order(arvore raiz, tabela *tab) {
     if (raiz != NULL) {
@@ -100,16 +102,14 @@ void imprimir_elemento(arvore raiz, tabela *tab) {
 
     fseek(tab->arquivo_dados, raiz->dado->indice, SEEK_SET);
 
-    // Ler o registro do arquivo
     fread(temp, sizeof(dado), 1, tab->arquivo_dados);
 
-    // Agora você pode imprimir os campos do registro ou fazer o que for necessário
     printf("Titulo: %s\n", temp->titulo);
     printf("Autor: %s\n", temp->autor);
     printf("ISBN: %s\n", temp->isbn);
     printf("Código: %d\n", temp->codigo);
 
-    free(temp); // Não se esqueça de liberar a memória alocada
+    free(temp);
 }
 
 dado *ler_dados() {
@@ -127,13 +127,13 @@ dado *ler_dados() {
     fgets(novo->autor, sizeof(novo->autor), stdin);
     tirar_enter(novo->autor);
 
-    getchar(); // Pausa para permitir a visualização
+    getchar(); 
 
     printf("Isbn: ");
     fgets(novo->isbn, sizeof(novo->isbn), stdin);
     tirar_enter(novo->isbn);
 
-    getchar(); // Pausa para permitir a visualização
+    getchar(); 
 
     printf("Codigo: ");
     scanf("%d", &novo->codigo);
@@ -148,18 +148,20 @@ void tirar_enter(char *string){
 void salvar_arquivo(char *nome, arvore a){
   FILE *arq;
   arq = fopen(nome, "wb");
-  if(arq !+ NULL){
+  if(arq != NULL){
     salvar_arquivo(a, arq);
     fclose(arq);
   }
 }
 
-void salvar_auxiliar(arvore raiz, FILE *arq){
-  if(raiz != NULL){
-    fwrite(raiz->dado, sizeof(tipo_dado), 1, arq);
-    salvar_auxiliar(raiz->esq, arq);
-    salvar_auxiliar(raiz->dir, arq);
-  }
+void salvar_auxiliar(arvore raiz, FILE *arq) {
+    if (raiz != NULL) {
+        if (raiz->dado != NULL) {
+            fwrite(raiz->dado, sizeof(tipo_dado), 1, arq);
+        }
+        salvar_auxiliar(raiz->esq, arq);
+        salvar_auxiliar(raiz->dir, arq);
+    }
 }
 
 arvore carregar_arquivo(char *nome, arvore a){
