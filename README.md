@@ -1,4 +1,4 @@
-# indexacao
+# Indexação 
 Código atividade de Indexação em C.
 
 1) Considere um registro de uma Entidade escolhida pela equipe, contendo pelo menos um campo de string de tamanho variável e com a chave primária no campo Codigo(inteiro).
