@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdio_ext.h>
 #include <stdlib.h>
 #include "ind.h"
 
@@ -18,6 +17,31 @@ int inicializarTabela(tabela *tab){
 	return 0;
     }
 }
+
+tipo_dado *maior_elemento(arvore raiz) {
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    while (raiz->dir != NULL) {
+        raiz = raiz->dir;
+    }
+
+    return raiz->dado;
+}
+
+tipo_dado *menor_elemento(arvore raiz) {
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    while (raiz->esq != NULL) {
+        raiz = raiz->esq;
+    }
+
+    return raiz->dado;
+}
+
 
 void finalizar(tabela *tab){
     fclose(tab->arquivo_dados);
@@ -40,11 +64,12 @@ void adicionarLivro(tabela *tab, dado *livro){
 
 arvore adicionar(tipo_dado *valor, arvore raiz){
     if(raiz == NULL){
-        arvore novo = (arvore) malloc(sizeof(struct no_bst));
+        arvore novo = (arvore) malloc(sizeof(struct no_avl));
         novo->dado = valor;
         novo->esq = NULL;
         novo->dir = NULL;
-        return novo; // Adicione esta linha para retornar o novo nó criado
+        novo->altura = 1;
+        return novo;
     }
 
     if(valor->chave > raiz->dado->chave){
@@ -107,7 +132,7 @@ void imprimir_elemento(arvore raiz, tabela *tab) {
     printf("Titulo: %s\n", temp->titulo);
     printf("Autor: %s\n", temp->autor);
     printf("ISBN: %s\n", temp->isbn);
-    printf("Código: %d\n", temp->codigo);
+    printf("Codigo: %d\n", temp->codigo);
 
     free(temp);
 }
@@ -127,13 +152,13 @@ dado *ler_dados() {
     fgets(novo->autor, sizeof(novo->autor), stdin);
     tirar_enter(novo->autor);
 
-    getchar(); 
+    getchar();
 
     printf("Isbn: ");
     fgets(novo->isbn, sizeof(novo->isbn), stdin);
     tirar_enter(novo->isbn);
 
-    getchar(); 
+    getchar();
 
     printf("Codigo: ");
     scanf("%d", &novo->codigo);
@@ -179,6 +204,3 @@ arvore carregar_arquivo(char *nome, arvore a){
   }
   return a;
 }
-
-
-
