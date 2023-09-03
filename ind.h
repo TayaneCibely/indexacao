@@ -1,6 +1,5 @@
 #ifndef IND_H
 #define IND_H
-
 #include <stdio.h>
 
 typedef struct livro{
