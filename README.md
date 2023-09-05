@@ -7,5 +7,5 @@ Código atividade de Indexação em C.
 
   b) Implemente a operação Buscar Registro, que primeiro faz uma consulta no índice, em seguida, com apenas uma operação de SEEK carrega os dados do registro no arquivo  e exibe na tela.
 
-Dupla: Vinicius Leite Costa
+Dupla: Vinicius Leite Costa e
        Tayane Cibely Batista Rodrigues
