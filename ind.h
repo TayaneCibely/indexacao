@@ -7,7 +7,7 @@ typedef struct livro{
   char autor[51];
   char isbn[21];
   int codigo;
-}dado;
+} dado;
 
 typedef struct indice {
   int chave;
@@ -27,7 +27,7 @@ arvore adicionar(tipo_dado *valor, arvore raiz);
 typedef struct tabela{
   FILE *arquivo_dados;
   arvore indices;
-}tabela;
+} tabela;
 
 int inicializarTabela(tabela *tab);
 void finalizar(tabela *tab);
@@ -42,7 +42,7 @@ tipo_dado * menor_elemento(arvore raiz);
 void pre_order(arvore raiz, tabela * tab);
 void pos_order(arvore raiz, tabela * tab);
 void in_order(arvore raiz, tabela * tab);
-dado * ler_dados();
+void ler_dados(dado *novo);
 void tirar_enter(char *string);
 
 void salvar_arquivo(char *nome, arvore a);
@@ -50,3 +50,4 @@ void salvar_auxiliar(arvore raiz, FILE *arq);
 arvore carregar_arquivo(char *nome, arvore a);
 
 #endif
+
